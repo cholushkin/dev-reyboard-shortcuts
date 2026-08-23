@@ -10,7 +10,7 @@ namespace GameLib
     {
         private static List<DevInputMap> _activeMaps;
 
-        /// Returns all currently active input maps loaded from Resources, automatically removing any maps that have been overridden.
+        /// Returns all currently active input maps loaded from Resources, automatically removing any maps that have been overridden or disabled.
         public static IReadOnlyList<DevInputMap> ActiveMaps
         {
             get
@@ -24,6 +24,9 @@ namespace GameLib
         }
 
         [Header("Override Settings")]
+        [Tooltip("If enabled, this entire input map will be completely ignored at runtime and will not override any base maps.")]
+        public bool isDisabled = false;
+
         [Tooltip("If assigned, this asset will completely override and disable the referenced base map at runtime.")]
         public DevInputMap overrideFor;
 
@@ -45,8 +48,11 @@ namespace GameLib
 
         private void OnValidate()
         {
-            /// Invalidate pre-indexed cache whenever bindings are modified live in the Inspector
+            /// Invalidate pre-indexed cache whenever bindings or states are modified live in the Inspector
             _bindingsByKeyCode = null;
+            
+            // Force a reload of active maps so toggling 'isDisabled' at runtime takes effect instantly
+            _activeMaps = null; 
         }
 
         /// Pre-indexes active bindings into an O(1) dictionary keyed by virtual key code
@@ -69,15 +75,16 @@ namespace GameLib
             }
         }
 
-        /// Scans Resources for all DevInputMap assets and strips out any map that is referenced by another map's 'overrideFor' field.
+        /// Scans Resources for all DevInputMap assets and strips out disabled maps and overridden maps.
         public static void ReloadActiveMaps()
         {
             var allMaps = Resources.LoadAll<DevInputMap>("");
             var overriddenMaps = new HashSet<DevInputMap>();
 
+            // 1. Gather all legitimate overrides (ignoring overrides coming from disabled maps)
             foreach (var map in allMaps)
             {
-                if (map != null && map && map.overrideFor != null)
+                if (map != null && map && !map.isDisabled && map.overrideFor != null)
                 {
                     overriddenMaps.Add(map.overrideFor);
                 }
@@ -85,15 +92,25 @@ namespace GameLib
 
             _activeMaps = new List<DevInputMap>();
 
+            // 2. Build the final active list
             foreach (var map in allMaps)
             {
                 if (map == null || !map) continue;
+
+                if (map.isDisabled)
+                {
+                    if (map.printRawInputToConsole)
+                    {
+                        Debug.Log($"[DevInputMap] Skipping map '{map.name}' because it is marked as Disabled.");
+                    }
+                    continue;
+                }
 
                 if (overriddenMaps.Contains(map))
                 {
                     if (map.printRawInputToConsole)
                     {
-                        Debug.Log($"[DevInputMap] Suppressing base map '{map.name}' because an override map is targeting it.");
+                        Debug.Log($"[DevInputMap] Suppressing base map '{map.name}' because an active override map is targeting it.");
                     }
                     continue;
                 }
@@ -147,6 +164,9 @@ namespace GameLib
         /// Evaluates an incoming raw input press against this specific map's pre-indexed bindings in O(1) time.
         public int ProcessRawKeyPress(int vkCode, string deviceName, bool isDebug)
         {
+            // Failsafe: Double-check disabled state just in case
+            if (isDisabled) return 0;
+
             if (_bindingsByKeyCode == null)
             {
                 BuildKeyCodeIndex();

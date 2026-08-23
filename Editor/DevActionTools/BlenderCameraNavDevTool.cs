@@ -1,64 +1,76 @@
 using UnityEditor;
 using UnityEngine;
+using System;
 
 namespace GameLib
 {
-    /// Controls Unity Scene View camera navigation with authentic Blender numpad shortcuts and parity.
+    // Controls Unity Scene View camera navigation with authentic Blender numpad shortcuts and parity.
     [CreateAssetMenu(menuName = "GameLib/Debug/DevKeyboardShortcuts/DevTools/Blender Camera Nav Tool", fileName = "BlenderCameraNavTool")]
     public class BlenderCameraNavDevTool : DevActionTool
     {
         public enum CameraNavAction
         {
-            // Standard Orthographic Views
-            ViewTop,             // Numpad 7
-            ViewBottom,          // Ctrl + Numpad 7
-            ViewFront,           // Numpad 1
-            ViewBack,            // Ctrl + Numpad 1
-            ViewRight,           // Numpad 3
-            ViewLeft,            // Ctrl + Numpad 3
-            ViewFlip180,         // Numpad 9 (Orbit 180° to opposite side) 
+            ViewTop,             
+            ViewBottom,          
+            ViewFront,           
+            ViewBack,            
+            ViewRight,           
+            ViewLeft,            
+            ViewFlip180,         
 
-            // Projection & Focus & Isolation
-            TogglePerspOrtho,    // Numpad 5
-            FrameSelected,       // Numpad . (Period)
-            ToggleIsolation,     // Numpad / (Slash - Local / Global View toggle)
+            TogglePerspOrtho,    
+            FrameSelected,       
+            ToggleIsolation,     
 
-            // Active Camera Control
-            LookThroughActiveCamera,   // Numpad 0
-            AlignActiveCameraToView,   // Ctrl + Alt + Numpad 0
+            LookThroughActiveCamera,   
+            AlignActiveCameraToView,   
+            SetActiveObjectAsCamera,
 
-            // Orbiting (Numpad 4, 6, 8, 2)
             OrbitLeft,
             OrbitRight,
             OrbitUp,
             OrbitDown,
 
-            // Panning (Ctrl + Numpad 4, 6, 8, 2)
             PanLeft,
             PanRight,
             PanUp,
             PanDown,
 
-            // Zooming (Numpad +, -)
             ZoomIn,
-            ZoomOut
+            ZoomOut,
+            
+            RollLeft,
+            RollRight,
+
+            ViewLocalTop,
+            ViewLocalBottom,
+            ViewLocalFront,
+            ViewLocalBack,
+            ViewLocalRight,
+            ViewLocalLeft
+        }
+
+        [Serializable]
+        public class NavigationSensitivity
+        {
+            [Tooltip("Angle in degrees to rotate the camera when using Orbit keys.")]
+            public float orbitStepAngle = 15.0f;
+
+            [Tooltip("Multiplier for panning speed relative to current viewport zoom size.")]
+            public float panStepMultiplier = 0.1f;
+
+            [Tooltip("Percentage to zoom in or out per step relative to current viewport zoom size.")]
+            public float zoomStepMultiplier = 0.15f;
         }
 
         [Header("Action Configuration")]
         [Tooltip("The specific Blender camera navigation action this tool asset will execute.")]
         public CameraNavAction actionType = CameraNavAction.ViewFront;
 
-        [Header("Navigation Sensitivity")]
-        [Tooltip("Angle in degrees to rotate the camera when using Orbit keys (4, 6, 8, 2).")]
-        public float orbitStepAngle = 15.0f;
+        [Header("Sensitivity Settings")]
+        [Tooltip("Configuration specifically for Orbit, Pan, and Zoom actions.")]
+        public NavigationSensitivity sensitivity = new NavigationSensitivity();
 
-        [Tooltip("Multiplier for panning speed relative to current viewport zoom size.")]
-        public float panStepMultiplier = 0.1f;
-
-        [Tooltip("Percentage to zoom in or out per step relative to current viewport zoom size.")]
-        public float zoomStepMultiplier = 0.15f;
-
-        /// Executes the selected camera navigation action on the active Scene View.
         public override void Execute()
         {
             SceneView sceneView = GetActiveSceneView();
@@ -68,135 +80,146 @@ namespace GameLib
                 return;
             }
 
+            if (sceneView.in2DMode)
+            {
+                sceneView.in2DMode = false;
+                sceneView.ShowNotification(new GUIContent("2D Mode Disabled"));
+                Debug.Log("[BlenderCameraNav] 2D mode disabled.");
+            }
+
             switch (actionType)
             {
-                // Standard Orthographic Views
                 case CameraNavAction.ViewTop:
                     SetViewOrientation(sceneView, Vector3.down, Vector3.forward);
                     break;
-
                 case CameraNavAction.ViewBottom:
                     SetViewOrientation(sceneView, Vector3.up, Vector3.forward);
                     break;
-
                 case CameraNavAction.ViewFront:                    
-                    SetViewOrientation(sceneView, Vector3.back, Vector3.up);
-                    break;
-
-                case CameraNavAction.ViewBack:                    
                     SetViewOrientation(sceneView, Vector3.forward, Vector3.up);
                     break;
-
+                case CameraNavAction.ViewBack:                    
+                    SetViewOrientation(sceneView, Vector3.back, Vector3.up);
+                    break;
                 case CameraNavAction.ViewRight:
                     SetViewOrientation(sceneView, Vector3.left, Vector3.up);
                     break;
-
                 case CameraNavAction.ViewLeft:
                     SetViewOrientation(sceneView, Vector3.right, Vector3.up);
                     break;
-
                 case CameraNavAction.ViewFlip180:
                     OrbitCamera(sceneView, 180f, 0f);
                     sceneView.ShowNotification(new GUIContent("View Flipped 180°"));
                     break;
 
-                // Projection & Focus & Isolation
                 case CameraNavAction.TogglePerspOrtho:
                     sceneView.orthographic = !sceneView.orthographic;
                     sceneView.ShowNotification(new GUIContent(sceneView.orthographic ? "Orthographic" : "Perspective"));
                     break;
-
                 case CameraNavAction.FrameSelected:
                     sceneView.FrameSelected();
                     break;
-
                 case CameraNavAction.ToggleIsolation:
                     ToggleLocalViewIsolation(sceneView);
                     break;
 
-                // Active Camera Control
                 case CameraNavAction.LookThroughActiveCamera:
                     LookThroughCamera(sceneView);
                     break;
-
                 case CameraNavAction.AlignActiveCameraToView:
                     AlignCameraToSceneView(sceneView);
                     break;
+                case CameraNavAction.SetActiveObjectAsCamera: 
+                    SetActiveObjectAsCamera(sceneView); 
+                    break;
 
-                // Orbiting
                 case CameraNavAction.OrbitLeft:
-                    OrbitCamera(sceneView, -orbitStepAngle, 0f);
+                    OrbitCamera(sceneView, -sensitivity.orbitStepAngle, 0f);
                     break;
-
                 case CameraNavAction.OrbitRight:
-                    OrbitCamera(sceneView, orbitStepAngle, 0f);
+                    OrbitCamera(sceneView, sensitivity.orbitStepAngle, 0f);
                     break;
-
                 case CameraNavAction.OrbitUp:
-                    OrbitCamera(sceneView, 0f, orbitStepAngle);
+                    OrbitCamera(sceneView, 0f, sensitivity.orbitStepAngle);
                     break;
-
                 case CameraNavAction.OrbitDown:
-                    OrbitCamera(sceneView, 0f, -orbitStepAngle);
+                    OrbitCamera(sceneView, 0f, -sensitivity.orbitStepAngle);
                     break;
 
-                // Panning
                 case CameraNavAction.PanLeft:
-                    PanCamera(sceneView, -panStepMultiplier, 0f);
+                    PanCamera(sceneView, -sensitivity.panStepMultiplier, 0f);
                     break;
-
                 case CameraNavAction.PanRight:
-                    PanCamera(sceneView, panStepMultiplier, 0f);
+                    PanCamera(sceneView, sensitivity.panStepMultiplier, 0f);
                     break;
-
                 case CameraNavAction.PanUp:
-                    PanCamera(sceneView, 0f, panStepMultiplier);
+                    PanCamera(sceneView, 0f, sensitivity.panStepMultiplier);
                     break;
-
                 case CameraNavAction.PanDown:
-                    PanCamera(sceneView, 0f, -panStepMultiplier);
+                    PanCamera(sceneView, 0f, -sensitivity.panStepMultiplier);
                     break;
 
-                // Zooming
                 case CameraNavAction.ZoomIn:
-                    ZoomCamera(sceneView, -zoomStepMultiplier);
+                    ZoomCamera(sceneView, -sensitivity.zoomStepMultiplier);
+                    break;
+                case CameraNavAction.ZoomOut:
+                    ZoomCamera(sceneView, sensitivity.zoomStepMultiplier);
+                    break;
+                
+                case CameraNavAction.RollLeft: 
+                    RollCamera(sceneView, sensitivity.orbitStepAngle); 
+                    break;
+                case CameraNavAction.RollRight: 
+                    RollCamera(sceneView, -sensitivity.orbitStepAngle); 
                     break;
 
-                case CameraNavAction.ZoomOut:
-                    ZoomCamera(sceneView, zoomStepMultiplier);
+                case CameraNavAction.ViewLocalTop: 
+                    SetLocalViewOrientation(sceneView, Vector3.down, Vector3.forward); 
+                    break;
+                case CameraNavAction.ViewLocalBottom: 
+                    SetLocalViewOrientation(sceneView, Vector3.up, Vector3.forward); 
+                    break;
+                case CameraNavAction.ViewLocalFront: 
+                    SetLocalViewOrientation(sceneView, Vector3.forward, Vector3.up); 
+                    break;
+                case CameraNavAction.ViewLocalBack: 
+                    SetLocalViewOrientation(sceneView, Vector3.back, Vector3.up); 
+                    break;
+                case CameraNavAction.ViewLocalRight: 
+                    SetLocalViewOrientation(sceneView, Vector3.left, Vector3.up); 
+                    break;
+                case CameraNavAction.ViewLocalLeft: 
+                    SetLocalViewOrientation(sceneView, Vector3.right, Vector3.up); 
                     break;
             }
 
-            // Force an immediate redraw of the Scene View viewport
             sceneView.Repaint();
         }
 
-        /// Snaps the camera to a standard axis view while preserving pivot and zoom size.
         private static void SetViewOrientation(SceneView view, Vector3 lookDirection, Vector3 upDirection)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection, upDirection);
             view.LookAt(view.pivot, targetRotation, view.size, view.orthographic);
+            view.isRotationLocked = false; 
             view.ShowNotification(new GUIContent(GetViewName(lookDirection)));
         }
 
-        /// Rotates the camera around its current pivot point by specified yaw and pitch angles.
         private static void OrbitCamera(SceneView view, float deltaYaw, float deltaPitch)
         {
-            Quaternion currentRotation = view.rotation;
+            Vector3 euler = view.rotation.eulerAngles;
+            float pitch = euler.x;
+            float yaw = euler.y;
+            float roll = euler.z;
 
-            // Yaw rotates around the world Up axis (Vector3.up)
-            Quaternion yawRotation = Quaternion.AngleAxis(deltaYaw, Vector3.up);
-            currentRotation = yawRotation * currentRotation;
+            if (pitch > 180f) pitch -= 360f;
 
-            // Pitch rotates around the camera's local Right axis
-            Vector3 localRight = currentRotation * Vector3.right;
-            Quaternion pitchRotation = Quaternion.AngleAxis(deltaPitch, localRight);
-            currentRotation = pitchRotation * currentRotation;
+            pitch = Mathf.Clamp(pitch + deltaPitch, -89.8f, 89.8f);
+            yaw += deltaYaw;
 
-            view.LookAt(view.pivot, currentRotation, view.size, view.orthographic);
+            Quaternion newRotation = Quaternion.Euler(pitch, yaw, roll);
+            view.LookAt(view.pivot, newRotation, view.size, view.orthographic);
         }
 
-        /// Pans the Scene View pivot along the camera's local X/Y plane proportionally to zoom distance.
         private static void PanCamera(SceneView view, float deltaX, float deltaY)
         {
             float stepDistance = view.size;
@@ -207,7 +230,6 @@ namespace GameLib
             view.LookAt(newPivot, view.rotation, view.size, view.orthographic);
         }
 
-        /// Zooms the Scene View in or out by scaling the view size.
         private static void ZoomCamera(SceneView view, float zoomDeltaMultiplier)
         {
             float newSize = view.size * (1.0f + zoomDeltaMultiplier);
@@ -215,13 +237,11 @@ namespace GameLib
             view.LookAt(view.pivot, view.rotation, newSize, view.orthographic);
         }
 
-        /// Toggles object isolation using Unity's native SceneVisibilityManager (like Blender's Numpad /).
         private static void ToggleLocalViewIsolation(SceneView view)
         {
             var visMgr = SceneVisibilityManager.instance;
             if (visMgr == null) return;
 
-            // CRITICAL FIX: Use IsCurrentStageIsolated() instead of IsIsolated()
             if (visMgr.IsCurrentStageIsolated())
             {
                 visMgr.ExitIsolation();
@@ -241,13 +261,12 @@ namespace GameLib
             }
         }
 
-        /// Snaps Scene View to look through the active or main camera (like Blender's Numpad 0).
         private static void LookThroughCamera(SceneView view)
         {
             Camera targetCam = Selection.activeGameObject?.GetComponent<Camera>() ?? Camera.main;
             if (targetCam == null)
             {
-                targetCam = Object.FindFirstObjectByType<Camera>();
+                targetCam = UnityEngine.Object.FindFirstObjectByType<Camera>();
             }
 
             if (targetCam != null)
@@ -261,13 +280,12 @@ namespace GameLib
             }
         }
 
-        /// Aligns the actual game camera to match the current Scene View perspective (like Ctrl + Alt + Numpad 0).
         private static void AlignCameraToSceneView(SceneView view)
         {
             Camera targetCam = Selection.activeGameObject?.GetComponent<Camera>() ?? Camera.main;
             if (targetCam == null)
             {
-                targetCam = Object.FindFirstObjectByType<Camera>();
+                targetCam = UnityEngine.Object.FindFirstObjectByType<Camera>();
             }
 
             if (targetCam != null)
@@ -283,8 +301,59 @@ namespace GameLib
                 view.ShowNotification(new GUIContent("No Camera Found to Align!"));
             }
         }
+        
+        private static void RollCamera(SceneView view, float rollAngle)
+        {
+            Quaternion rollRotation = Quaternion.AngleAxis(rollAngle, view.camera.transform.forward);
+            Quaternion newRotation = rollRotation * view.rotation;
+            view.LookAt(view.pivot, newRotation, view.size, view.orthographic);
+        }
 
-        /// Safely retrieves the last active Scene View or fallbacks to the first available one.
+        /// Snaps the view to a local axis of the currently selected object.
+        private static void SetLocalViewOrientation(SceneView view, Vector3 localLook, Vector3 localUp)
+        {
+            Transform target = Selection.activeTransform;
+            if (target == null)
+            {
+                SetViewOrientation(view, localLook, localUp); // Fallback to global
+                return;
+            }
+
+            // Convert local directional vectors to world space
+            Vector3 worldLook = target.TransformDirection(localLook);
+            Vector3 worldUp = target.TransformDirection(localUp);
+            Quaternion targetRotation = Quaternion.LookRotation(worldLook, worldUp);
+
+            // CRITICAL FIX: Unity's native mouse orbit breaks if the camera has Z-axis roll.
+            // We strip the Z-axis rotation (roll) to prevent the viewport from locking.
+            Vector3 euler = targetRotation.eulerAngles;
+            targetRotation = Quaternion.Euler(euler.x, euler.y, 0f);
+
+            // Snap to the object's position with the corrected rotation
+            view.LookAt(target.position, targetRotation, view.size, view.orthographic);
+            view.isRotationLocked = false; 
+            view.ShowNotification(new GUIContent($"Local {GetViewName(localLook)}"));
+        }
+
+        private static void SetActiveObjectAsCamera(SceneView view)
+        {
+            GameObject selected = Selection.activeGameObject;
+            if (selected == null)
+            {
+                view.ShowNotification(new GUIContent("Select an object to set as camera!"));
+                return;
+            }
+
+            Camera cam = selected.GetComponent<Camera>();
+            if (cam == null)
+            {
+                Undo.AddComponent<Camera>(selected);
+            }
+
+            view.AlignViewToObject(selected.transform);
+            view.ShowNotification(new GUIContent($"Set Active Camera: {selected.name}"));
+        }
+
         private static SceneView GetActiveSceneView()
         {
             if (SceneView.lastActiveSceneView != null)
@@ -300,8 +369,8 @@ namespace GameLib
         {
             if (dir == Vector3.down) return "Top View";
             if (dir == Vector3.up) return "Bottom View";
-            if (dir == Vector3.back) return "Front View";
-            if (dir == Vector3.forward) return "Back View";
+            if (dir == Vector3.forward) return "Front View";
+            if (dir == Vector3.back) return "Back View";
             if (dir == Vector3.left) return "Right View";
             if (dir == Vector3.right) return "Left View";
             return "Custom View";
