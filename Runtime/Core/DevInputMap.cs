@@ -1,3 +1,6 @@
+// todo: implement device-specific visualization in custom inspector
+// idea: add runtime binding creation support for user-configurable shortcuts
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -72,6 +75,17 @@ namespace GameLib
                     _bindingsByKeyCode[binding.virtualKeyCode] = list;
                 }
                 list.Add(binding);
+            }
+
+            // Sort each list so bindings with MORE modifiers are evaluated first
+            foreach (var kvp in _bindingsByKeyCode)
+            {
+                kvp.Value.Sort((a, b) =>
+                {
+                    int countA = a.modifiers?.Count ?? 0;
+                    int countB = b.modifiers?.Count ?? 0;
+                    return countB.CompareTo(countA); // Descending order
+                });
             }
         }
 
@@ -179,12 +193,25 @@ namespace GameLib
             }
 
             int matchCount = 0;
+            int executedModifierCount = -1;
+
             for (int i = 0; i < matchingBindings.Count; i++)
             {
                 var binding = matchingBindings[i];
+                int currentModCount = binding.modifiers?.Count ?? 0;
+
+                // If we already executed a highly specific shortcut (e.g., 2 modifiers),
+                // skip any fallback overlapping bindings with fewer modifiers.
+                if (executedModifierCount != -1 && currentModCount < executedModifierCount)
+                {
+                    continue; 
+                }
+
                 if (binding.Matches(vkCode, deviceName))
                 {
                     matchCount++;
+                    executedModifierCount = currentModCount;
+
                     if (isDebug || printRawInputToConsole)
                     {
                         Debug.Log($"[DevTools] Executing Tool: '{binding.boundTool?.name ?? "NULL TOOL"}' from Device: '{binding.deviceFriendlyName}' (Map: '{name}')");

@@ -1,3 +1,6 @@
+// todo: add visual indicator in inspector for overlapping generic bindings
+// idea: support differentiating left vs right modifiers explicitly in UI
+
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -70,8 +73,8 @@ namespace GameLib
                 }
             }
 
-            // 3. Validate Modifiers
-            if (modifiers != null)
+            // 3. Only verify that the REQUIRED modifiers are held. Let the Router handle exclusions.
+            if (modifiers != null && modifiers.Count > 0)
             {
                 int count = Mathf.Min(modifiers.Count, 2);
                 for (int i = 0; i < count; i++)

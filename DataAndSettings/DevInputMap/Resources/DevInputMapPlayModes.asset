@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31e130d7f633334458c10f000c274701, type: 3}
-  m_Name: DevInputMap
+  m_Name: DevInputMapPlayModes
   m_EditorClassIdentifier: DevKeyboardShortcuts::GameLib.DevInputMap
   overrideFor: {fileID: 0}
   printRawInputToConsole: 0

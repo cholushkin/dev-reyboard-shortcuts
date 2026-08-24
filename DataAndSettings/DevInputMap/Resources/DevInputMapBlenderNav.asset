@@ -12,19 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31e130d7f633334458c10f000c274701, type: 3}
   m_Name: DevInputMapBlenderNav
   m_EditorClassIdentifier: DevKeyboardShortcuts::GameLib.DevInputMap
+  isDisabled: 0
   overrideFor: {fileID: 0}
   printRawInputToConsole: 1
   bindings:
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 36
     modifiers: []
     boundTool: {fileID: 11400000, guid: a50e0f4f6824c2c4d81b27b92e20aa8d, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 36
     modifiers:
@@ -33,7 +34,7 @@ MonoBehaviour:
     boundTool: {fileID: 11400000, guid: 154df02530fe6354b9e47a5d49bab9a8, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 36
     modifiers:
@@ -42,7 +43,7 @@ MonoBehaviour:
     boundTool: {fileID: 11400000, guid: d954df50efb7d484cb08a8c238f120c6, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 36
     modifiers:
@@ -53,14 +54,14 @@ MonoBehaviour:
     boundTool: {fileID: 11400000, guid: f55ffaeb02c37ee419e9dd2d98defe5c, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 35
     modifiers: []
     boundTool: {fileID: 11400000, guid: 9db31855f7ea9d74b83d92e691b24ac9, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 35
     modifiers:
@@ -69,7 +70,7 @@ MonoBehaviour:
     boundTool: {fileID: 11400000, guid: 87ce740f97758374ebfe1e2179cfd5dc, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 35
     modifiers:
@@ -78,14 +79,25 @@ MonoBehaviour:
     boundTool: {fileID: 11400000, guid: e3da66db937fde144911dfc955d0f96d, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 35
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 16
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: a7c1c22b7b2a30841a7a6155b4a45363, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 34
     modifiers: []
     boundTool: {fileID: 11400000, guid: b78f91bfb1dadc548822b19d49a3a37a, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 34
     modifiers:
@@ -94,15 +106,172 @@ MonoBehaviour:
     boundTool: {fileID: 11400000, guid: 61bef0e1db33fbc45a590b7c794426ee, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 33
     modifiers: []
     boundTool: {fileID: 11400000, guid: c83bca2ba87bdc44fa74b4e377a371ce, type: 2}
   - isEnabled: 1
     executionContext: 1
-    deviceHardwareId: 
+    deviceHardwareId: VID_30FA&PID_2031
     deviceFriendlyName: 
     virtualKeyCode: 12
     modifiers: []
     boundTool: {fileID: 11400000, guid: 36fe9a415c8eaf54f949ce2bb65961df, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 34
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 16
+    boundTool: {fileID: 11400000, guid: a9024595c7381324381ccd8766cd62b2, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 34
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 16
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: 5544a97019104eb41892271dbc9aa464, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 46
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: 80528017a6f9372498753d2e81e97336, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 111
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: 6e914dd178f295d429cccdb87a43c04b, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 45
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: 2038af5d45424b6418ca3cca45fdf26b, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 45
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    - deviceHardwareId: 
+      virtualKeyCode: 18
+    boundTool: {fileID: 11400000, guid: c41f846eaa5beb349be81f31f3b336e5, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 45
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: 4eb16695259729f469e57b9c3764401c, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 39
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: fb4fe3c61337b3f4cb106d2d0bb65baa, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 37
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: b2adc33ce5ce93949a309590a8931be7, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 38
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: 773819a0e9b39254c890d59939d60919, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 40
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: 1b9b9fd721fd9ae4b985297105c30a7a, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 39
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: 67dae442b6165d0449c588a3d482cff7, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 37
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: f9f47d8063c414b42b31341412cf7906, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 38
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: 383e5e78bd2454940a0731f9386e4aa9, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 40
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 17
+    boundTool: {fileID: 11400000, guid: 45b5d8b23892da64b8e66bf1e01eb240, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 37
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 16
+    boundTool: {fileID: 11400000, guid: 0a5458835585d564195d676fd53a5601, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 39
+    modifiers:
+    - deviceHardwareId: 
+      virtualKeyCode: 16
+    boundTool: {fileID: 11400000, guid: cae290c78a3b03c48a3eabce3eee33be, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 107
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: ee297e4dbfb73124c8d8db1ee3f8e59d, type: 2}
+  - isEnabled: 1
+    executionContext: 1
+    deviceHardwareId: VID_30FA&PID_2031
+    deviceFriendlyName: 
+    virtualKeyCode: 109
+    modifiers: []
+    boundTool: {fileID: 11400000, guid: c3d9a9b0d7371b949946ed20a686fcc4, type: 2}

@@ -66,6 +66,18 @@ dev-keyboard-shortcuts/
 
 ---
 
+
+##  Included Tools
+### Blender Camera Navigation
+The system includes a fully featured Blender camera navigation tool that maps Unity Scene View controls to authentic Blender Numpad shortcuts.
+[View the Blender Navigation Numpad Cheat Sheet](BlenderNavigation.md)
+
+### Play Modes & Time Control
+A suite of tools for controlling the Editor play state, scene sequences, and time scale, complete with a Scene View UI overlay.
+[View the Play Modes & Time Control Documentation](PlayModeControl.md)
+
+---
+
 ## Team Workflows & Local Overrides
 
 To modify or add personal shortcuts without altering the shared team configuration:

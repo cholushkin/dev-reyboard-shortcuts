@@ -196,9 +196,19 @@ namespace GameLib
             sceneView.Repaint();
         }
 
+        /// Snaps the camera to a standard axis view while preserving pivot and zoom size.
         private static void SetViewOrientation(SceneView view, Vector3 lookDirection, Vector3 upDirection)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookDirection, upDirection);
+
+            // CRITICAL FIX: Prevent Unity's internal Slerp from locking up on 180-degree flips
+            if (Quaternion.Angle(view.rotation, targetRotation) > 179.5f)
+            {
+                // Nudge the current camera rotation by a fraction of a degree
+                // This forces Unity to pick a definitive shortest-path direction for the animation
+                view.rotation *= Quaternion.Euler(0, 0.1f, 0);
+            }
+
             view.LookAt(view.pivot, targetRotation, view.size, view.orthographic);
             view.isRotationLocked = false; 
             view.ShowNotification(new GUIContent(GetViewName(lookDirection)));
@@ -335,23 +345,24 @@ namespace GameLib
             view.ShowNotification(new GUIContent($"Local {GetViewName(localLook)}"));
         }
 
+        // idea: allow user to hold Shift during this command to automatically attach a camera if they want one
+        /// Snaps the Scene View to perfectly match the selected object's position and rotation without modifying it.
         private static void SetActiveObjectAsCamera(SceneView view)
         {
             GameObject selected = Selection.activeGameObject;
             if (selected == null)
             {
-                view.ShowNotification(new GUIContent("Select an object to set as camera!"));
+                view.ShowNotification(new GUIContent("Select an object to snap view to!"));
                 return;
             }
 
-            Camera cam = selected.GetComponent<Camera>();
-            if (cam == null)
-            {
-                Undo.AddComponent<Camera>(selected);
-            }
-
+            // Snap the view to the object
             view.AlignViewToObject(selected.transform);
-            view.ShowNotification(new GUIContent($"Set Active Camera: {selected.name}"));
+    
+            // Explicitly unlock the rotation to prevent the Scene View from getting stuck
+            view.isRotationLocked = false; 
+
+            view.ShowNotification(new GUIContent($"View Snapped to: {selected.name}"));
         }
 
         private static SceneView GetActiveSceneView()
