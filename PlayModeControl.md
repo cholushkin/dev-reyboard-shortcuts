@@ -15,7 +15,7 @@ Integrates with the SceneSequenceController to load and test specific game scena
 - Run Start Scene As Release: Boots the game from the primary initialization scene to simulate a production build environment.
 - Select Next Sequence: Cycles to the next available sequence.
 
-##Time Scale Overlay
+## Time Scale Overlay
 An interactive UI overlay rendered directly in the Unity Scene View.
 - Real-time Monitoring: Displays the current game speed alongside status icons.
 - Status Indicators: Visually updates with clear emoji icons (🕑 for playing, ⏸️ for paused) and changes text color to red when paused.
